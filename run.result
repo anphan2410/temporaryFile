@@ -4,7 +4,7 @@
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 1 "<command-line>" 2
 # 1 "anlogger.h"
-# 23 "anlogger.h"
+# 27 "anlogger.h"
 # 1 "/usr/include/stdio.h" 1 3 4
 # 28 "/usr/include/stdio.h" 3 4
 # 1 "/usr/include/bits/libc-header-start.h" 1 3 4
@@ -988,7 +988,7 @@ extern int ftrylockfile (FILE *__stream) throw () ;
 extern void funlockfile (FILE *__stream) throw ();
 # 945 "/usr/include/stdio.h" 3 4
 }
-# 24 "anlogger.h" 2
+# 28 "anlogger.h" 2
 # 1 "/usr/include/c++/6.3.0/stdlib.h" 1 3
 # 36 "/usr/include/c++/6.3.0/stdlib.h" 3
 # 1 "/usr/include/c++/6.3.0/cstdlib" 1 3
@@ -2469,7 +2469,7 @@ using std::system;
 
 using std::wcstombs;
 using std::wctomb;
-# 25 "anlogger.h" 2
+# 29 "anlogger.h" 2
 # 1 "/usr/include/c++/6.3.0/string" 1 3
 # 36 "/usr/include/c++/6.3.0/string" 3
        
@@ -18826,7 +18826,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 54 "/usr/include/c++/6.3.0/string" 2 3
-# 26 "anlogger.h" 2
+# 30 "anlogger.h" 2
 # 1 "/usr/include/c++/6.3.0/iostream" 1 3
 # 36 "/usr/include/c++/6.3.0/iostream" 3
        
@@ -27502,7 +27502,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 }
-# 27 "anlogger.h" 2
+# 31 "anlogger.h" 2
 # 1 "/usr/include/c++/6.3.0/sstream" 1 3
 # 36 "/usr/include/c++/6.3.0/sstream" 3
        
@@ -28315,7 +28315,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 814 "/usr/include/c++/6.3.0/sstream" 2 3
-# 28 "anlogger.h" 2
+# 32 "anlogger.h" 2
 # 1 "/usr/include/c++/6.3.0/thread" 1 3
 # 32 "/usr/include/c++/6.3.0/thread" 3
        
@@ -41160,7 +41160,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 }
-# 29 "anlogger.h" 2
+# 33 "anlogger.h" 2
 
 
 # 1 "/usr/include/c++/6.3.0/vector" 1 3
@@ -44104,33 +44104,33 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 70 "/usr/include/c++/6.3.0/vector" 2 3
-# 32 "anlogger.h" 2
-# 57 "anlogger.h"
+# 36 "anlogger.h" 2
+# 61 "anlogger.h"
 
-# 57 "anlogger.h"
+# 61 "anlogger.h"
 static char anStdErrBuffer[
-# 57 "anlogger.h" 3 4
+# 61 "anlogger.h" 3 4
                           8192
-# 57 "anlogger.h"
+# 61 "anlogger.h"
                                 ];
 
 static const std::chrono::steady_clock::time_point anThisProgramStartingTimePoint = [](){
     setvbuf(
-# 60 "anlogger.h" 3 4
+# 64 "anlogger.h" 3 4
            stderr
-# 60 "anlogger.h"
+# 64 "anlogger.h"
                  , anStdErrBuffer, 
-# 60 "anlogger.h" 3 4
+# 64 "anlogger.h" 3 4
                                    0
-# 60 "anlogger.h"
+# 64 "anlogger.h"
                                          , 
-# 60 "anlogger.h" 3 4
+# 64 "anlogger.h" 3 4
                                            8192
-# 60 "anlogger.h"
+# 64 "anlogger.h"
                                                  );
     return std::chrono::steady_clock::now();
 }();
-# 117 "anlogger.h"
+# 121 "anlogger.h"
     inline static bool anGetCurrentConsoleTextAttribute(unsigned short &OutputVar) {
         std::string tmpBuff = std::string(anStdErrBuffer);
         std::size_t tmp = tmpBuff.find_last_of(u8"\033[");
@@ -44139,10 +44139,15 @@ static const std::chrono::steady_clock::time_point anThisProgramStartingTimePoin
             ++tmp;
             if ((tmpBuff.at(tmp) == u'0') && (tmpBuff.at(tmp+1) == u'm'))
                 OutputVar = 0;
-            else if ((tmpBuff.at(tmp) == u'3') && (tmpBuff.at(tmp+2) == u'm'))
-                OutputVar = std::stoi(tmpBuff.substr(tmp,2));
             else
-                return false;
+            {
+                if (tmpBuff.at(tmp) == u'1')
+                    tmp += 2;
+                if ((tmpBuff.at(tmp) == u'3') && (tmpBuff.at(tmp+2) == u'm'))
+                    OutputVar = std::stoi(tmpBuff.substr(tmp,2));
+                else
+                    return false;
+            }
             return true;
         }
         else
@@ -44152,82 +44157,125 @@ static const std::chrono::steady_clock::time_point anThisProgramStartingTimePoin
 
 
     inline static const std::string anSetConsoleTextAttributePrefixString(unsigned short TxtAttrib) {
-        std::string tmp = u8"\033[";
-        tmp += std::to_string(TxtAttrib);
-        tmp += u8"m";
-        return tmp;
+        if (TxtAttrib)
+        {
+            std::string tmp = u8"\033[";
+
+
+
+            tmp += std::to_string(TxtAttrib);
+            tmp += u8"m";
+            return tmp;
+        }
+        else
+            return u8"\033[0m";
     }
-# 151 "anlogger.h"
+# 168 "anlogger.h"
 static const unsigned short anOriginalConsoleTextAttribute = [](){
     unsigned short tmp = 0;
     anGetCurrentConsoleTextAttribute(tmp);
     return tmp;
 }();
-# 378 "anlogger.h"
-inline static void anTmpNoLineMessageLogger(
-
-
-                                          const std::string &aNoLineMessage,
 
 
 
 
 
 
-                                            std::string &destMsgStr,
-# 401 "anlogger.h"
-                                            ) {
 
-        destMsgStr += aNoLineMessage;
-# 427 "anlogger.h"
-}
-# 466 "anlogger.h"
-inline static void anTmpMessageLogger(
-
-
-
-                                      std::string &rawMsgStr,
-
-
-
-
-
-
-                                      std::string &destMsgStr,
-
-
-
-
-
-                                      const unsigned short &txtAttrib,
-
-
-
-                                      const unsigned short &previousTxtAttrib
+        static std::vector<long long> anStdThreadIdListOfCurrentProgram;
+        static std::vector<unsigned short> anNormalizedThreadIdListOfCurrentProgram;
+        inline static int anStdThreadIdListOfCurrentProgramIndexOf(const long long & aThreadId) {
+            const int maxIndex = static_cast<int>(anStdThreadIdListOfCurrentProgram.size());
+            for (int tmp = 0; tmp < maxIndex; ++tmp) {
+                if (anStdThreadIdListOfCurrentProgram[tmp] == aThreadId)
+                {
+                    return tmp;
+                }
+            }
+            return -1;
+        }
+        inline static unsigned short anGetCurrentNormalizedThreadId(const std::thread::id &currentThreadId) {
+            std::stringstream tmp;
+            tmp << currentThreadId;
+            long long currentStdThreadId = std::stoll(tmp.str());
+            int tmpIndex = anStdThreadIdListOfCurrentProgramIndexOf(currentStdThreadId);
+            if (tmpIndex == -1)
+            {
+                anStdThreadIdListOfCurrentProgram.push_back(currentStdThreadId);
+                unsigned short tmpOut = anNormalizedThreadIdListOfCurrentProgram.size();
+                anNormalizedThreadIdListOfCurrentProgram.push_back(tmpOut);
+                return tmpOut;
+            }
+            else
+                return tmpIndex;
+        }
 
 
 
 
+        inline static const std::string anGetCurrentFileName(const std::string &currentFilePath) {
+            return currentFilePath.substr(
+                        currentFilePath.find_last_of(u'/')+1);
+        }
+# 224 "anlogger.h"
+    inline static const std::string anCurrentMessagePath(
 
-                                      ) {
 
 
-            destMsgStr += anSetConsoleTextAttributePrefixString(txtAttrib);
-# 512 "anlogger.h"
-    for(std::string::size_type i = 0;(i = rawMsgStr.find(u8"\n", 0)) != std::string::npos;)
-    {
-        anTmpNoLineMessageLogger(rawMsgStr.substr(0,i++) + u8"\n", destMsgStr, );
-        rawMsgStr = rawMsgStr.substr(i);
+                    const unsigned long int &currentElapsedTime,
+
+
+
+
+
+
+
+                    const unsigned short &currentThreadId,
+
+
+
+
+
+
+                    const std::string &currentFunctionName,
+
+
+
+
+
+
+
+                    const std::string &currentFileName,
+
+
+
+
+
+                const unsigned int &currentLine
+
+            ) {
+        std::string tmp = u8"";
+
+                tmp += u8"|";
+                tmp += std::to_string(currentThreadId);
+
+
+                tmp += u8"|";
+                tmp += currentFunctionName;
+
+
+                tmp += u8"|";
+                tmp += currentFileName;
+
+
+                tmp += u8"|";
+                tmp += std::to_string(currentLine);
+
+
+                tmp += u8"|";
+                tmp += std::to_string(currentElapsedTime);
+
+        tmp += u8"|";
+        return tmp;
     }
-    if (!rawMsgStr.empty())
-        anTmpNoLineMessageLogger(rawMsgStr, destMsgStr, );
-
-
-            destMsgStr += anSetConsoleTextAttributePrefixString(previousTxtAttrib);
-
-
-
-
-
-
-}

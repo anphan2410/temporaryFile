@@ -1,11 +1,1 @@
-[1;31;45m
-Critical
-[0m
-dsf
-dg
-^[[1;37m
-Test okay
-
-dgdsfsgs
-^[[0m
-kdslgk
+[0m adfsgsdkf
